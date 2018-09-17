@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+# Train a Logistic regression model on tf-idf features 
+# and output the probability prediction for each toxic class
 
 import numpy as np
 import pandas as pd
@@ -31,7 +33,7 @@ test_features = tfidf_vectorizer.transform(test_text)
 
 # train the model
 scores = []
-y_pred_tfidf = pd.DataFrame.from_dict({id: test_df["id"]})
+y_pred = pd.DataFrame.from_dict({id: test_df["id"]})
 for class_name in class_names:
     train_target = train_df[class_name]
     classifier = LogisticRegression(solver="sag")
@@ -42,5 +44,7 @@ for class_name in class_names:
     print("Average CV score for {} : {}".format(class_name, cv_score))
 
     classifier.fit(train_features, train_target)
-    y_pred_tfidf[class_name] = classifier.predict_proba(test_features)[:, 1]
+    y_pred[class_name] = classifier.predict_proba(test_features)[:, 1]
+    
 print("Total average CV score for all classes : {}".format(np.mean(scores)))
+
